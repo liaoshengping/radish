@@ -147,9 +147,6 @@ return [
 ];
 ```
 
-#### 后续版本规划
-此包的开发是方便大家在项目中快速构建对应的接口，如果您对功能的新增、修改有建议，希望发邮件到john1668#qq.com 邮箱（#需要替换为@）或者 直接**issues**
-	
-- [ ] 关系模型（一对一，一对多，多对多）的关系处理
-- [ ] resource class 的添加（api 生成可选参数方式）
-
+#### 资源贡献
+Fork for 
+https://github.com/chujc/laravel-generator
