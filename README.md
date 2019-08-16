@@ -6,7 +6,7 @@
 
 因为是开发环境下使用的包，请执行如下方式安装，不要省略`--dev`参数
 ```bash
-composer require radish/laravel-generator --dev
+composer require liaosp/laravel-generator --dev
 ```
 Laravel 5.5以上版本安装后就可以执行命令生成对应的文件，Lumen需要在`bootstrap/app.php` 文件下面 末端加入如下代码
 
