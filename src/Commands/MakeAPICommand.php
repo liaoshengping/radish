@@ -24,6 +24,8 @@ class MakeAPICommand extends GeneratorCommand
 
     protected $generator;
 
+    protected $prefix;
+
 
     protected function qualifyClass($name)
     {
@@ -42,14 +44,19 @@ class MakeAPICommand extends GeneratorCommand
         } else {
             $this->generator = config('generator.api_config.'. config('generator.api_default'));
         };
-
         if (!$this->generator) {
             $this->error('未找到配置文件，请检查config/generator.php');
             return;
         }
 
         $name = $this->qualifyClass($this->getNameInput());
-
+        //如果有包含了路径，不单独拆分名字为前缀
+        if(!strstr($name,'\\')){
+            $moveController = str_replace('Controller', '', $name);
+            $down_str =$this->cc_format($moveController);
+            $this->prefix =$this->getPrefix($down_str);
+            $name = $this->prefix.'\\'.$name;
+        }
         $path = $this->generator['path'] . '/' . $this->getNamespace($name);
 
         $controllerFileName = $path . '/' . $this->getClassName($name) . '.php';
@@ -112,6 +119,27 @@ class MakeAPICommand extends GeneratorCommand
 
     }
 
+    private function cc_format($name){
+        $temp_array = array();
+        for($i=0;$i<strlen($name);$i++){
+            $ascii_code = ord($name[$i]);
+            if($ascii_code >= 65 && $ascii_code <= 90){
+                if($i == 0){
+                    $temp_array[] = chr($ascii_code + 32);
+                }else{
+                    $temp_array[] = '_'.chr($ascii_code + 32);
+                }
+            }else{
+                $temp_array[] = $name[$i];
+            }
+        }
+        return implode('',$temp_array);
+    }
+
+    protected function getPrefix($name){
+        $exp = explode('_',$name);
+        return $exp[0];
+    }
 
     /**
      * 检查对应文件夹是否存在，并创建对应文件夹
@@ -153,7 +181,7 @@ class MakeAPICommand extends GeneratorCommand
         if ($this->checkModelExists()) {
             $id = lcfirst($this->getClassName(Str::studly($this->option('model'))));
         }
-
+        $controller = $this->nameFormatToRoute($controller);
         $this->files->append($this->generator['route'], "Route::get('{$url}', '{$controller}@index');" . PHP_EOL);
         $this->files->append($this->generator['route'], "Route::post('{$url}', '{$controller}@store');" . PHP_EOL);
         $this->files->append($this->generator['route'], "Route::get('{$url}/{{$id}}', '{$controller}@show');" . PHP_EOL);
@@ -179,10 +207,20 @@ class MakeAPICommand extends GeneratorCommand
     {
         return str_replace('\\', '/', $name);
     }
+    protected function nameFormatToRoute($name)
+    {
+        return str_replace('/','\\',  $name);
+    }
 
     protected function removeControllerString($name)
     {
         return  strtolower(str_replace('Controller', '', $name));
+    }
+    protected function convertUnderline ( $str , $ucfirst = true)
+    {
+        $str = ucwords(str_replace('_', ' ', $str));
+        $str = str_replace(' ','',lcfirst($str));
+        return $ucfirst ? ucfirst($str) : $str;
     }
 
     /**
