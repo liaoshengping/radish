@@ -176,7 +176,7 @@ class MakeAPICommand extends GeneratorCommand
 //            $this->info($name . ' route created successfully.');
 //            return;
 //        }
-
+        //test
         $id = 'id';
         if ($this->checkModelExists()) {
             $id = lcfirst($this->getClassName(Str::studly($this->option('model'))));
