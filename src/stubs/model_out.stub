@@ -1,0 +1,13 @@
+<?php
+/**
+ * Class {{ClassName}}
+ */
+
+namespace App\Models;
+
+use App\Models\base\{{ClassName}}Base;
+
+class {{ClassName}} extends {{ClassName}}Base
+{
+
+}

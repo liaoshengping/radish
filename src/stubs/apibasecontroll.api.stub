@@ -1,0 +1,47 @@
+<?php
+
+
+namespace App\Http\Controllers;
+
+
+class ApiBaseController extends Controller
+{
+    const SUCCESS_MSG = '获取成功';
+
+    const ERROR_MSG = '失败';
+
+    protected $msg = 'info';
+
+    protected $code = 200;
+
+    protected $return_data = [];
+
+    public function success($data = [], $msg = self::SUCCESS_MSG)
+    {
+        $this->msg = $msg;
+        $this->return_data = $data;
+        return $this->outPut();
+    }
+
+    public function successMsg($msg)
+    {
+        $this->msg = $msg;
+        return $this->outPut();
+    }
+
+    public function error($msg=self::ERROR_MSG)
+    {
+        $this->msg = $msg;
+        return $this->outPut();
+    }
+
+    public function outPut()
+    {
+        $data = [
+            'msg' => $this->msg,
+            'data' => $this->return_data,
+            'code' => $this->code,
+        ];
+        return response()->json($data, $this->code);
+    }
+}

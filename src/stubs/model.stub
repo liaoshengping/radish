@@ -29,4 +29,9 @@ class DummyClass extends {{shortNameExtends}}
     {{updated_at}}
 
     {{fillable}}
+
+
+
+    public function laji(){
+    }
 }

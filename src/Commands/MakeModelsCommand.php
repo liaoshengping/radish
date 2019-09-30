@@ -12,11 +12,13 @@ use DB;
 
 class MakeModelsCommand extends GeneratorCommand
 {
+    protected $is_base = false;
     /**
      * The console command name.
      *
      * @var string
      */
+//    public function
     protected $name = 'radish:models';
 
     /**
@@ -81,7 +83,10 @@ class MakeModelsCommand extends GeneratorCommand
         }
 
         $path = $this->generator['path'];
-
+        $base_path = $this->generator['path'].'/base';
+        if (!$this->files->exists($base_path)) {
+            @mkdir($base_path, 0777, true);
+        }
         if (!$this->files->exists($path)) {
             @mkdir($path, 0777, true);
         }
@@ -97,9 +102,10 @@ class MakeModelsCommand extends GeneratorCommand
                         return;
                     }
                 }
-
-                $this->files->put($path . '/' . $array['class'] . '.php', $array['file']);
-
+                $file =$this->modelOut();
+                $file = str_replace('{{ClassName}}', $array['class'], $file);
+                $this->files->put($path . '/base/' . $array['class'].'Base' . '.php', $array['file']);
+                $this->files->put($path . '/' . $array['class'] . '.php', $file);
                 $this->info($array['class'] . ' created successfully.');
 
                 if (array_key_exists('Doctrine\DBAL\\', $packages) && array_key_exists('Barryvdh\LaravelIdeHelper\\', $packages)) {
@@ -112,7 +118,12 @@ class MakeModelsCommand extends GeneratorCommand
         });
 
     }
+    public function modelOut(){
+        $file = file_get_contents(__DIR__.'/../stubs/model_out.stub');
 
+
+        return $file;
+    }
     /**
      * 获取数据库表字段
      * @param $table
@@ -188,8 +199,8 @@ class MakeModelsCommand extends GeneratorCommand
 
         $properties = $this->getTableProperties($table);
 
-        $classFile = $this->buildClass($className);
-
+        $classFile = $this->buildClass($className.'Base');
+        $this->is_base = true;
         if (is_array($properties['primaryKey'])) {
             if (count($properties['primaryKey']) == 0) {
                $this->warn($tableName . '表未设置主键, 使用默认的主键id, int型, 自增长');
@@ -223,8 +234,12 @@ class MakeModelsCommand extends GeneratorCommand
                 $classFile = str_replace('{{incrementing}}', 'public $incrementing = false;', $classFile);
             }
         }
+        if(!$this->is_base){
+            $classFile = str_replace('{{namespace}}', $this->generator['namespace'], $classFile);
+        }else{
+            $classFile = str_replace('{{namespace}}', $this->generator['namespace'].'\base', $classFile);
+        }
 
-        $classFile = str_replace('{{namespace}}', $this->generator['namespace'], $classFile);
 
         $classFile = str_replace('{{extends}}', $this->generator['extends'], $classFile);
 
