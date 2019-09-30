@@ -184,10 +184,10 @@ class MakeAPICommand extends GeneratorCommand
         $controller = $this->nameFormatToRoute($controller);
         $this->files->append($this->generator['route'], "Route::get('{$url}', '{$controller}@index');" . PHP_EOL);
         $this->files->append($this->generator['route'], "Route::post('{$url}', '{$controller}@store');" . PHP_EOL);
+        $this->files->append($this->generator['route'], "Route::get('{$url}/all', '{$controller}@all');" . PHP_EOL);
         $this->files->append($this->generator['route'], "Route::get('{$url}/{{$id}}', '{$controller}@show');" . PHP_EOL);
         $this->files->append($this->generator['route'], "Route::put('{$url}/{{$id}}', '{$controller}@update');" . PHP_EOL);
         $this->files->append($this->generator['route'], "Route::delete('{$url}/{{$id}}', '{$controller}@destroy');" . PHP_EOL);
-
         $this->info($name . ' route created successfully.');
     }
 
