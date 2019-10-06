@@ -44,4 +44,26 @@ class ApiBaseController extends Controller
         ];
         return response()->json($data, $this->code);
     }
+    /**
+     * 分页输出
+     * @param $data
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function pageList($data){
+        $data =json_decode(json_encode($data),true);
+        $data = [
+            'data' => $data['data'],
+            'link'=>[],
+            'meta'=>[
+                'current_page'=>$data['current_page'],
+                'total'=>$data['total'],
+                'path'=>$data['path'],
+                'last_page'=>$data['last_page'],
+                'to'=>$data['to'],
+                'per_page'=>$data['per_page'],
+            ],
+        ];
+        return response()->json($data, $this->code);
+    }
+
 }

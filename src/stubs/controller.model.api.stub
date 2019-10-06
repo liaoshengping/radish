@@ -14,7 +14,9 @@ class {{className}} extends {{extendsName}}
      */
     public function index(Request $request)
     {
-         return {{upperModelName}}::paginate(15);
+         $pageData = {{upperModelName}}::paginate(15);
+
+         return $this->pageList($pageData);
     }
 
     /**
