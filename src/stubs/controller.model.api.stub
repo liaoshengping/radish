@@ -10,7 +10,17 @@ use {{extends}};
 class {{className}} extends {{extendsName}}
 {
     /**
-     * 获取分页列表
+     * showdoc
+     * @catalog {{modules}}模块/{{upperModelName}}功能
+     * @title 分页列表
+     * @description
+     * @method get
+     * @url /{{Route}}
+     * @param Demo 必选 string 例子
+     * @return {}
+     * @return_param demo int 例子
+     * @remark 这里是备注信息
+     * @number 99
      */
     public function index(Request $request)
     {
@@ -20,17 +30,30 @@ class {{className}} extends {{extendsName}}
     }
 
     /**
-     * 获取全部数据
+     * showdoc
+     * @catalog {{modules}}模块/{{upperModelName}}功能
+     * @title 获取全部数据
+     * @description
+     * @method get
+     * @url /{{Route}}/all
+     * @return {}
+     * @remark 这里是备注信息
+     * @number 99
      */
     public function all(Request $request)
     {
          return {{upperModelName}}::all();
     }
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \{{useRequestNamespace}}  $request
-     * @return \Illuminate\Http\Response
+     * showdoc
+     * @catalog {{modules}}模块/{{upperModelName}}功能
+     * @title 新增数据
+     * @description
+     * @method post
+     * @url /{{Route}}
+     * @return {}
+     * @remark 这里是备注信息
+     * @number 99
      */
     public function store({{requestName}} $request)
     {
@@ -40,10 +63,15 @@ class {{className}} extends {{extendsName}}
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \{{useModelNamespace}} ${{modelName}}
-     * @return ${{modelName}}
+     * showdoc
+     * @catalog {{modules}}模块/{{upperModelName}}功能
+     * @title 获取索引为99的数据
+     * @description
+     * @method get
+     * @url /{{Route}}/99
+     * @return {}
+     * @remark 这里是备注信息
+     * @number 99
      */
     public function show({{upperModelName}} ${{modelName}})
     {
@@ -51,11 +79,15 @@ class {{className}} extends {{extendsName}}
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \{{useRequestNamespace}}  $request
-     * @param  \{{useModelNamespace}}  ${{modelName}}
-     * @return ${{modelName}}
+     * showdoc
+     * @catalog {{modules}}模块/{{upperModelName}}功能
+     * @title 更新数据索引为99的数据
+     * @description
+     * @method put
+     * @url /{{Route}}/99
+     * @return {}
+     * @remark 这里是备注信息
+     * @number 99
      */
     public function update({{requestName}} $request, {{upperModelName}} ${{modelName}})
     {
@@ -65,11 +97,15 @@ class {{className}} extends {{extendsName}}
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \{{useModelNamespace}} ${{modelName}}
-     * @return string
-     * @throws \Exception
+     * showdoc
+     * @catalog {{modules}}模块/{{upperModelName}}功能
+     * @title 删除索引为99的数据
+     * @description
+     * @method delete
+     * @url /{{Route}}/99
+     * @return {}
+     * @remark 这里是备注信息
+     * @number 99
      */
     public function destroy({{upperModelName}} ${{modelName}})
     {

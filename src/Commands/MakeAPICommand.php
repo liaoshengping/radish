@@ -15,6 +15,8 @@ class MakeAPICommand extends GeneratorCommand
      */
     protected $name = 'radish:api';
 
+
+    protected $route;
     /**
      * The console command description.
      *
@@ -95,6 +97,13 @@ class MakeAPICommand extends GeneratorCommand
 
             $controllerClassFile = str_replace('{{useRequestNamespace}}', $useRequestNamespace, $controllerClassFile);
             $controllerClassFile = str_replace('{{requestName}}', $requestName, $controllerClassFile);
+            $controller = $this->nameFormatController($name);
+
+            $url = $this->removeControllerString($controller);
+            $firstModules =explode('/',$url)[0];
+
+            $controllerClassFile = str_replace('{{Route}}', $url, $controllerClassFile);
+            $controllerClassFile = str_replace('{{modules}}', $firstModules, $controllerClassFile);
 
         } else {
             if ($this->option("model")) {
