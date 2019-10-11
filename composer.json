@@ -3,7 +3,6 @@
     "description": "Laravel, Lumen脚手架 按规则自动生成model文件以及controller，request文件 ",
     "keywords": ["generator", "lumen", "laravel", "API", "model", "controller"],
     "license": "MIT",
-    "version": "1.0",
     "authors": [
         {
             "name": "liaosp",
