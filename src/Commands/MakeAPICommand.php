@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputOption;
 class MakeAPICommand extends GeneratorCommand
 {
     /**
-     * 2019年10月11日 16:59:33
+     * 2019年10月11日 17:24:58
      * The console command name.
      *
      * @var string
