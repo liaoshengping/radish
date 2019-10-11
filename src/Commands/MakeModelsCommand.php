@@ -105,7 +105,9 @@ class MakeModelsCommand extends GeneratorCommand
                 $file =$this->modelOut();
                 $file = str_replace('{{ClassName}}', $array['class'], $file);
                 $this->files->put($path . '/base/' . $array['class'].'Base' . '.php', $array['file']);
-                $this->files->put($path . '/' . $array['class'] . '.php', $file);
+                if(!is_file($path . '/' . $array['class'] . '.php')){
+                    $this->files->put($path . '/' . $array['class'] . '.php', $file);
+                }
                 $this->info($array['class'] . ' created successfully.');
 
                 if (array_key_exists('Doctrine\DBAL\\', $packages) && array_key_exists('Barryvdh\LaravelIdeHelper\\', $packages)) {

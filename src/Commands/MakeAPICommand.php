@@ -88,9 +88,11 @@ class MakeAPICommand extends GeneratorCommand
 
                 $requestFile = str_replace('{{requestNamespace}}', $this->generator['request_namespace'], $requestFile);
                 $requestFile = str_replace('{{requestClassName}}', Str::studly($this->option('model')). 'Request', $requestFile);
-
                 $fileName = $this->generator['request_path'] . '/' . Str::studly($this->option('model')). 'Request.php';
-                $this->files->put($fileName, $requestFile);
+
+                if(!is_file($fileName)){
+                    $this->files->put($fileName, $requestFile);
+                }
 
                 $useRequestNamespace = $this->generator['request_namespace']. '\\'. Str::studly($this->option('model')). 'Request';
                 $requestName = Str::studly($this->option('model')). 'Request';

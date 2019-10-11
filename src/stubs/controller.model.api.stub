@@ -91,9 +91,13 @@ class {{className}} extends {{extendsName}}
      */
     public function update({{requestName}} $request, {{upperModelName}} ${{modelName}})
     {
-         ${{modelName}}->update($request->all());
+         $res =${{modelName}}->update($request->all());
+         if(!$res){
+           return $this->error();
+         }else{
+           return $this->success();
+         }
 
-        return ${{modelName}};
     }
 
     /**
@@ -109,8 +113,11 @@ class {{className}} extends {{extendsName}}
      */
     public function destroy({{upperModelName}} ${{modelName}})
     {
-        ${{modelName}}->delete();
-
-        return '';
+        $res =${{modelName}}->delete();
+        if(!$res){
+           return $this->error();
+         }else{
+           return $this->success();
+         }
     }
 }

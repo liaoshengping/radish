@@ -7,10 +7,10 @@
 
 namespace {{namespace}};
 
-use {{extends}};
+
 {{useSoftDeletes}}
 
-class DummyClass extends {{shortNameExtends}}
+class DummyClass extends ModelBase
 {
     {{softDeletes}}
 
