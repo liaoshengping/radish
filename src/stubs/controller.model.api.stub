@@ -58,8 +58,13 @@ class {{className}} extends {{extendsName}}
     public function store({{requestName}} $request)
     {
         ${{modelName}} = {{upperModelName}}::create($request->all());
+        if(${{modelName}}){
+           return $this->success(${{modelName}});
+        }else{
+         return $this->error(${{modelName}});
+        }
 
-        return ${{modelName}};
+
     }
 
     /**
