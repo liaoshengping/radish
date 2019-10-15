@@ -18,9 +18,23 @@ class {{requestClassName}} extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        $path =$this->getPathInfo();
+        $rules = [];
+          switch ($this->method()){
+              case "POST":
+
+                  break;
+              case "DELETE":
+
+                  break;
+              case "PUT":
+
+                  break;
+              case 'GET':
+
+                  break;
+          }
+          return $rules;
     }
 
     public function messages()
