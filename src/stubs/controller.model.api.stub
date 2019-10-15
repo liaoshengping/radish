@@ -24,7 +24,7 @@ class {{className}} extends {{extendsName}}
      */
     public function index(Request $request)
     {
-         $pageData = {{upperModelName}}::paginate(15);
+         $pageData = {{upperModelName}}::orderBy('created_at','DESC')->paginate(15);
 
          return $this->pageList($pageData);
     }
