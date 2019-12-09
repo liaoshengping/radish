@@ -21,14 +21,14 @@ class Database {
     {
         switch ($this->databaseEngine) {
             case 'mysql':
-                $columns = DB::select("SELECT COLUMN_NAME as `name`, DATA_TYPE as `type` FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . env("DB_DATABASE") . "' AND TABLE_NAME = '{$table}'");
+                $columns = DB::select("SELECT COLUMN_NAME as `name`, DATA_TYPE as `type`  , COLUMN_COMMENT as `memo` FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . env("DB_DATABASE") . "' AND TABLE_NAME = '{$table}'");
                 break;
             case 'sqlsrv':
             case 'dblib':
-                $columns = DB::select("SELECT COLUMN_NAME as 'name', DATA_TYPE as `type` FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_CATALOG = '" . env("DB_DATABASE") . "' AND TABLE_NAME = '{$table}'");
+                $columns = DB::select("SELECT COLUMN_NAME as 'name', DATA_TYPE as `type` , COLUMN_COMMENT as `memo` FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_CATALOG = '" . env("DB_DATABASE") . "' AND TABLE_NAME = '{$table}'");
                 break;
             case 'pgsql':
-                $columns = DB::select("SELECT COLUMN_NAME as name, DATA_TYPE as type FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_CATALOG = '" . env("DB_DATABASE") . "' AND TABLE_NAME = '{$table}'");
+                $columns = DB::select("SELECT COLUMN_NAME as name, DATA_TYPE as type  , COLUMN_COMMENT as `memo` FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_CATALOG = '" . env("DB_DATABASE") . "' AND TABLE_NAME = '{$table}'");
                 break;
         }
         return $columns;

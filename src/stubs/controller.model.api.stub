@@ -18,6 +18,7 @@ class {{className}} extends {{extendsName}}
      * @url /{{Route}}
      * @param Demo 必选 string 例子
      * @return {}
+{{returnParams}}
      * @return_param demo int 例子
      * @remark 这里是备注信息
      * @number 99

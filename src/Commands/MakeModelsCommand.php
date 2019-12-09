@@ -138,6 +138,7 @@ class MakeModelsCommand extends GeneratorCommand
         $database = new Database();
 
         $columns = json_decode(json_encode($database->getTableColumns($table)), true);
+
         // 获取所有字段
         $columnsCollection = Collection::make($columns);
         // 判断创建与更新时间戳

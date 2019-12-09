@@ -4,6 +4,7 @@ namespace Radish\LaravelGenerator\Commands;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
+use Radish\LaravelGenerator\Support\Database;
 use Symfony\Component\Console\Input\InputOption;
 
 class MakeAPICommand extends GeneratorCommand
@@ -29,6 +30,8 @@ class MakeAPICommand extends GeneratorCommand
 
     protected $prefix;
 
+    protected $columns;
+
 
     protected function qualifyClass($name)
     {
@@ -43,9 +46,9 @@ class MakeAPICommand extends GeneratorCommand
     {
 
         if ($this->option('config')) {
-            $this->generator = config('generator.api_config.'. $this->option('config'));
+            $this->generator = config('generator.api_config.' . $this->option('config'));
         } else {
-            $this->generator = config('generator.api_config.'. config('generator.api_default'));
+            $this->generator = config('generator.api_config.' . config('generator.api_default'));
         };
         if (!$this->generator) {
             $this->error('未找到配置文件，请检查config/generator.php');
@@ -54,11 +57,11 @@ class MakeAPICommand extends GeneratorCommand
 
         $name = $this->qualifyClass($this->getNameInput());
         //如果有包含了路径，不单独拆分名字为前缀
-        if(!strstr($name,'\\')){
+        if (!strstr($name, '\\')) {
             $moveController = str_replace('Controller', '', $name);
-            $down_str =$this->cc_format($moveController);
-            $this->prefix =$this->getPrefix($down_str);
-            $name = $this->prefix.'\\'.$name;
+            $down_str = $this->cc_format($moveController);
+            $this->prefix = $this->getPrefix($down_str);
+            $name = $this->prefix . '\\' . $name;
         }
         $path = $this->generator['path'] . '/' . $this->getNamespace($name);
 
@@ -70,6 +73,19 @@ class MakeAPICommand extends GeneratorCommand
                 return;
             }
         }
+        /**
+         * 获取表中的所有字段
+         */
+        $database = new Database();
+
+        //ss
+        $mode_name = Str::studly($this->option('model'));
+        if (!empty($mode_name)) {
+            $database = new Database();
+            $model_name = strtolower(preg_replace('/(?<=[a-z])([A-Z])/', '_$1', $mode_name));
+            $this->columns = json_decode(json_encode($database->getTableColumns($model_name)), true);
+        }
+
 
         if ($this->checkModelExists()) {
 
@@ -87,15 +103,15 @@ class MakeAPICommand extends GeneratorCommand
                 $requestFile = $this->buildClassFile('request');
 
                 $requestFile = str_replace('{{requestNamespace}}', $this->generator['request_namespace'], $requestFile);
-                $requestFile = str_replace('{{requestClassName}}', Str::studly($this->option('model')). 'Request', $requestFile);
-                $fileName = $this->generator['request_path'] . '/' . Str::studly($this->option('model')). 'Request.php';
+                $requestFile = str_replace('{{requestClassName}}', Str::studly($this->option('model')) . 'Request', $requestFile);
+                $fileName = $this->generator['request_path'] . '/' . Str::studly($this->option('model')) . 'Request.php';
 
-                if(!is_file($fileName)){
+                if (!is_file($fileName)) {
                     $this->files->put($fileName, $requestFile);
                 }
 
-                $useRequestNamespace = $this->generator['request_namespace']. '\\'. Str::studly($this->option('model')). 'Request';
-                $requestName = Str::studly($this->option('model')). 'Request';
+                $useRequestNamespace = $this->generator['request_namespace'] . '\\' . Str::studly($this->option('model')) . 'Request';
+                $requestName = Str::studly($this->option('model')) . 'Request';
             }
 
             $controllerClassFile = str_replace('{{useRequestNamespace}}', $useRequestNamespace, $controllerClassFile);
@@ -103,7 +119,7 @@ class MakeAPICommand extends GeneratorCommand
             $controller = $this->nameFormatController($name);
 
             $url = $this->removeControllerString($controller);
-            $firstModules =explode('/',$url)[0];
+            $firstModules = explode('/', $url)[0];
 
             $controllerClassFile = str_replace('{{Route}}', $url, $controllerClassFile);
             $controllerClassFile = str_replace('{{modules}}', $firstModules, $controllerClassFile);
@@ -131,25 +147,27 @@ class MakeAPICommand extends GeneratorCommand
 
     }
 
-    private function cc_format($name){
+    private function cc_format($name)
+    {
         $temp_array = array();
-        for($i=0;$i<strlen($name);$i++){
+        for ($i = 0; $i < strlen($name); $i++) {
             $ascii_code = ord($name[$i]);
-            if($ascii_code >= 65 && $ascii_code <= 90){
-                if($i == 0){
+            if ($ascii_code >= 65 && $ascii_code <= 90) {
+                if ($i == 0) {
                     $temp_array[] = chr($ascii_code + 32);
-                }else{
-                    $temp_array[] = '_'.chr($ascii_code + 32);
+                } else {
+                    $temp_array[] = '_' . chr($ascii_code + 32);
                 }
-            }else{
+            } else {
                 $temp_array[] = $name[$i];
             }
         }
-        return implode('',$temp_array);
+        return implode('', $temp_array);
     }
 
-    protected function getPrefix($name){
-        $exp = explode('_',$name);
+    protected function getPrefix($name)
+    {
+        $exp = explode('_', $name);
         return $exp[0];
     }
 
@@ -179,7 +197,7 @@ class MakeAPICommand extends GeneratorCommand
 
         $url = $this->removeControllerString($controller);
 
-        $filePath = $this->relativePath($this->generator['path']. '/' . $this->getNamespace($name). $this->getClassName($name));
+        $filePath = $this->relativePath($this->generator['path'] . '/' . $this->getNamespace($name) . $this->getClassName($name));
 
         $this->files->append($this->generator['route'], "// {$filePath}" . PHP_EOL);
 
@@ -219,19 +237,21 @@ class MakeAPICommand extends GeneratorCommand
     {
         return str_replace('\\', '/', $name);
     }
+
     protected function nameFormatToRoute($name)
     {
-        return str_replace('/','\\',  $name);
+        return str_replace('/', '\\', $name);
     }
 
     protected function removeControllerString($name)
     {
-        return  strtolower(str_replace('Controller', '', $name));
+        return strtolower(str_replace('Controller', '', $name));
     }
-    protected function convertUnderline ( $str , $ucfirst = true)
+
+    protected function convertUnderline($str, $ucfirst = true)
     {
         $str = ucwords(str_replace('_', ' ', $str));
-        $str = str_replace(' ','',lcfirst($str));
+        $str = str_replace(' ', '', lcfirst($str));
         return $ucfirst ? ucfirst($str) : $str;
     }
 
@@ -244,7 +264,7 @@ class MakeAPICommand extends GeneratorCommand
     {
         if ($this->option("model")) {
 
-            $modelFile = config('generator.model.path'). '/'. Str::studly($this->option('model')). '.php';
+            $modelFile = config('generator.model.path') . '/' . Str::studly($this->option('model')) . '.php';
 
             if ($this->files->exists($modelFile)) {
                 return true;
@@ -313,9 +333,59 @@ class MakeAPICommand extends GeneratorCommand
 
     protected function replaceModel($stub, $name)
     {
-        $stub = str_replace('{{useModelNamespace}}', config('generator.model.namespace'). '\\'. $name, $stub);
+
+        if (!empty($this->columns)) {
+            $replace_params = '';
+            $first = false;
+            foreach ($this->columns as $table_info) {
+                if ($first == true) {
+                    $replace_params .= PHP_EOL;
+                }
+                if (empty($table_info['memo'])) {
+                    switch ($table_info['name']) {
+                        case 'created_at':
+                            $table_info['memo'] = '创建时间';
+                            break;
+                        case 'updated_at':
+                            $table_info['memo'] = '更新时间';
+                            break;
+                        case 'deleted_at':
+                            $table_info['memo'] = '删除时间';
+                            break;
+                        case 'memo':
+                            $table_info['memo'] = '备注';
+                            break;
+                        case 'mobile':
+                            $table_info['memo'] = '手机';
+                            break;
+                        case 'name':
+                            $table_info['memo'] = '名称';
+                            break;
+                        case 'goods_id':
+                            $table_info['memo'] = '商品id';
+                            break;
+                        case 'contact_name':
+                            $table_info['memo'] = '联系人';
+                            break;
+                        case 'type':
+                            $table_info['memo'] = '类型';
+                            break;
+                        case 'status':
+                            $table_info['memo'] = '状态';
+                            break;
+                    }
+                }
+                $replace_params .= "     * @return_param {$table_info['name']} {$table_info['type']} {$table_info['memo']}";
+
+                $first = true;
+            }
+            $stub = str_replace('{{returnParams}}', $replace_params, $stub);
+        }
+
+        $stub = str_replace('{{useModelNamespace}}', config('generator.model.namespace') . '\\' . $name, $stub);
         $stub = str_replace('{{modelName}}', lcfirst($this->getClassName($name)), $stub);
         $stub = str_replace('{{upperModelName}}', $this->getClassName($name), $stub);
+
         return $stub;
     }
 
@@ -342,7 +412,7 @@ class MakeAPICommand extends GeneratorCommand
      */
     protected function getClassName($name)
     {
-        return str_replace($this->getNamespace($name).'\\', '', $name);
+        return str_replace($this->getNamespace($name) . '\\', '', $name);
     }
 
     /**
@@ -356,7 +426,7 @@ class MakeAPICommand extends GeneratorCommand
     protected function getNamespaceName($name, $type = 'namespace')
     {
         if ($this->getNamespace($name)) {
-            return $this->generator[$type] . '\\'. $this->getNamespace($name);
+            return $this->generator[$type] . '\\' . $this->getNamespace($name);
         }
         return $this->generator[$type];
     }
