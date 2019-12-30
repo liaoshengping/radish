@@ -38,6 +38,7 @@ class {{className}} extends {{extendsName}}
      * @method get
      * @url /{{Route}}/all
      * @return {}
+{{returnParams}}
      * @remark 这里是备注信息
      * @number 99
      */
@@ -53,6 +54,7 @@ class {{className}} extends {{extendsName}}
      * @method post
      * @url /{{Route}}
      * @return {}
+{{returnParams}}
      * @remark 这里是备注信息
      * @number 99
      */
@@ -76,6 +78,7 @@ class {{className}} extends {{extendsName}}
      * @method get
      * @url /{{Route}}/99
      * @return {}
+{{returnParams}}
      * @remark 这里是备注信息
      * @number 99
      */
@@ -92,6 +95,7 @@ class {{className}} extends {{extendsName}}
      * @method put
      * @url /{{Route}}/99
      * @return {}
+{{returnParams}}
      * @remark 这里是备注信息
      * @number 99
      */
