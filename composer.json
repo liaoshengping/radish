@@ -10,7 +10,8 @@
         }
     ],
     "require": {
-        "php": ">=7"
+        "php": ">=7",
+        "liaosp/tool": "^1.1"
     },
     "extra": {
         "laravel": {

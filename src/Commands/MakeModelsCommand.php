@@ -2,6 +2,7 @@
 
 namespace Radish\LaravelGenerator\Commands;
 
+use Liaosp\Tool\String\Character;
 use Radish\LaravelGenerator\Support\Database;
 use Radish\LaravelGenerator\Support\VariableConversion;
 use Illuminate\Console\GeneratorCommand;
@@ -95,6 +96,7 @@ class MakeModelsCommand extends GeneratorCommand
 
         $tableCollection->each(function ($item) use ($path, $packages){
             $array = $this->replaceString($item->name);
+
             if ($array) {
                 if ($this->files->exists($path . '/' . $array['class'] . '.php')) {
                     if (!$this->confirm("models {$array['class']} 已经存在, 请确认是否覆盖? [y|N]")) {
@@ -198,7 +200,10 @@ class MakeModelsCommand extends GeneratorCommand
         // 移除表前缀
         $tableName = str_replace(DB::getTablePrefix(), '', $table);
         // 获取驼峰class 名称
-        $className = Str::studly(Str::singular($tableName));
+        $className =Character::convertUnderline($tableName);
+//        echo $data;exit;
+//        echo Str::singular($tableName);exit;
+//        $className = Str::studly(Str::singular($tableName));
 
         $properties = $this->getTableProperties($table);
 
