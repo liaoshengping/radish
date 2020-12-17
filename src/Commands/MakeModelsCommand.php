@@ -186,6 +186,23 @@ class MakeModelsCommand extends GeneratorCommand
 
         return $properties;
     }
+    /**
+     * Replace the namespace for the given stub.
+     *
+     * @param  string  $stub
+     * @param  string  $name
+     * @return $this
+     */
+    protected function replaceNamespace(&$stub, $name)
+    {
+        $stub = str_replace(
+            ['DummyNamespace', 'DummyRootNamespace', 'NamespacedDummyUserModel'],
+            [$this->getNamespace($name), $this->rootNamespace(), $this->userProviderModel()],
+            $stub
+        );
+
+        return $this;
+    }
 
     /**
      * 替换模板变量
