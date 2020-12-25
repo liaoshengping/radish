@@ -84,7 +84,7 @@ class MakeModelsCommand extends GeneratorCommand
         }
 
         $path = $this->generator['path'];
-        $base_path = $this->generator['path'].'/base';
+        $base_path = $this->generator['path'] . '/base';
         if (!$this->files->exists($base_path)) {
             @mkdir($base_path, 0777, true);
         }
@@ -94,7 +94,7 @@ class MakeModelsCommand extends GeneratorCommand
 
         $packages = require_once base_path('vendor/composer/autoload_psr4.php');
 
-        $tableCollection->each(function ($item) use ($path, $packages){
+        $tableCollection->each(function ($item) use ($path, $packages) {
             $array = $this->replaceString($item->name);
 
             if ($array) {
@@ -104,10 +104,10 @@ class MakeModelsCommand extends GeneratorCommand
                         return;
                     }
                 }
-                $file =$this->modelOut();
+                $file = $this->modelOut();
                 $file = str_replace('{{ClassName}}', $array['class'], $file);
-                $this->files->put($path . '/base/' . $array['class'].'Base' . '.php', $array['file']);
-                if(!is_file($path . '/' . $array['class'] . '.php')){
+                $this->files->put($path . '/base/' . $array['class'] . 'Base' . '.php', $array['file']);
+                if (!is_file($path . '/' . $array['class'] . '.php')) {
                     $this->files->put($path . '/' . $array['class'] . '.php', $file);
                 }
                 $this->info($array['class'] . ' created successfully.');
@@ -122,12 +122,15 @@ class MakeModelsCommand extends GeneratorCommand
         });
 
     }
-    public function modelOut(){
-        $file = file_get_contents(__DIR__.'/../stubs/model_out.stub');
+
+    public function modelOut()
+    {
+        $file = file_get_contents(__DIR__ . '/../stubs/model_out.stub');
 
 
         return $file;
     }
+
     /**
      * 获取数据库表字段
      * @param $table
@@ -186,11 +189,12 @@ class MakeModelsCommand extends GeneratorCommand
 
         return $properties;
     }
+
     /**
      * Replace the namespace for the given stub.
      *
-     * @param  string  $stub
-     * @param  string  $name
+     * @param string $stub
+     * @param string $name
      * @return $this
      */
     protected function replaceNamespace(&$stub, $name)
@@ -217,22 +221,18 @@ class MakeModelsCommand extends GeneratorCommand
         // 移除表前缀
         $tableName = str_replace(DB::getTablePrefix(), '', $table);
         // 获取驼峰class 名称
-        if(!empty($this->generator['model_add_s'])){
-            $className =Character::convertUnderline($tableName); //解决goods 变good之类的
-        }else{
+        if (!empty($this->generator['model_add_s'])) {
+            $className = Character::convertUnderline($tableName); //解决goods 变good之类的
+        } else {
             $className = Str::studly(Str::singular($tableName)); //官方
         }
-//        echo $data;exit;
-//        echo Str::singular($tableName);exit;
-//        $className = Str::studly(Str::singular($tableName));
-
         $properties = $this->getTableProperties($table);
 
-        $classFile = $this->buildClass($className.'Base');
+        $classFile = $this->buildClass($className . 'Base');
         $this->is_base = true;
         if (is_array($properties['primaryKey'])) {
             if (count($properties['primaryKey']) == 0) {
-               $this->warn($tableName . '表未设置主键, 使用默认的主键id, int型, 自增长');
+                $this->warn($tableName . '表未设置主键, 使用默认的主键id, int型, 自增长');
                 $classFile = str_replace('{{primaryKey}}', '', $classFile);
                 $classFile = str_replace('{{keyType}}', '', $classFile);
                 $classFile = str_replace('{{incrementing}}', '', $classFile);
@@ -258,15 +258,15 @@ class MakeModelsCommand extends GeneratorCommand
                 $classFile = str_replace('{{incrementing}}', '', $classFile);
             } else {
 
-                $classFile = str_replace('{{primaryKey}}', 'protected $primaryKey =\''. $properties['primaryKey']. '\';', $classFile);
+                $classFile = str_replace('{{primaryKey}}', 'protected $primaryKey =\'' . $properties['primaryKey'] . '\';', $classFile);
                 $classFile = str_replace('{{keyType}}', 'protected $keyType = \'string\';', $classFile);
                 $classFile = str_replace('{{incrementing}}', 'public $incrementing = false;', $classFile);
             }
         }
-        if(!$this->is_base){
+        if (!$this->is_base) {
             $classFile = str_replace('{{namespace}}', $this->generator['namespace'], $classFile);
-        }else{
-            $classFile = str_replace('{{namespace}}', $this->generator['namespace'].'\base', $classFile);
+        } else {
+            $classFile = str_replace('{{namespace}}', $this->generator['namespace'] . '\base', $classFile);
         }
 
 
@@ -283,7 +283,7 @@ class MakeModelsCommand extends GeneratorCommand
             $classFile = str_replace('{{softDeletes}}', '', $classFile);
         }
 
-        $classFile = str_replace('{{table}}', 'protected $table =\'' . $tableName. '\';', $classFile);
+        $classFile = str_replace('{{table}}', 'protected $table =\'' . $tableName . '\';', $classFile);
 
         // 判断时间戳
         if (!$properties['timestamps']) {
@@ -291,7 +291,7 @@ class MakeModelsCommand extends GeneratorCommand
             $classFile = str_replace('{{created_at}}', '', $classFile);
             $classFile = str_replace('{{updated_at}}', '', $classFile);
 
-        }elseif (is_array($properties['timestamps']) && count($properties['timestamps']) == 2) {
+        } elseif (is_array($properties['timestamps']) && count($properties['timestamps']) == 2) {
             $classFile = str_replace('{{timestamps}}', '', $classFile);
 
             if ($properties['timestamps']['created_at'] != 'created_at') {
@@ -313,10 +313,10 @@ class MakeModelsCommand extends GeneratorCommand
 
         $classFile = str_replace('{{fillable}}', 'protected $fillable = ' . VariableConversion::arrayKey($properties['columns'], 'name') . ';', $classFile);
 
-        $classFile = str_replace(PHP_EOL. '    '. PHP_EOL, '', $classFile);
+        $classFile = str_replace(PHP_EOL . '    ' . PHP_EOL, '', $classFile);
         $classFile = str_replace('{{date}}', date('Y-m-d'), $classFile);
 
-        return [ 'file' => $classFile, 'class' => $className, 'namespace' => $this->generator['namespace'] . '\\'. $className];
+        return ['file' => $classFile, 'class' => $className, 'namespace' => $this->generator['namespace'] . '\\' . $className];
     }
 
     protected function getStub()
