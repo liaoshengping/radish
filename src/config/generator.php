@@ -19,7 +19,7 @@ return [
         'fill' => [],
         // 时间戳字段 如果自定义时间戳字段需要 只需要修改键对应的值
         'timestamps' => [
-            'created_at' => 'updated_at',
+            'created_at' => 'created_at',
             'updated_at' => 'updated_at',
         ],
         // 如果有自定义软删除时间戳 只需要修改对应的字段值
