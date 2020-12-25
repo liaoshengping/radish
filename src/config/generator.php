@@ -3,6 +3,8 @@
 return [
     //Eloquent Model
     'model' => [
+        //生成model的时候后面是否会生成s 比如goods 商品表会变成 Good 好！胡扯吧！！！！
+        'model_add_s'=>false,
         // 生成model的命名空间
         'namespace' => 'App\Models',
         // 生成的model放置文件夹
@@ -17,7 +19,7 @@ return [
         'fill' => [],
         // 时间戳字段 如果自定义时间戳字段需要 只需要修改键对应的值
         'timestamps' => [
-            'created_at' => 'create_time',
+            'created_at' => 'updated_at',
             'updated_at' => 'updated_at',
         ],
         // 如果有自定义软删除时间戳 只需要修改对应的字段值

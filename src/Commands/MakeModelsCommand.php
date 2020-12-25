@@ -217,7 +217,11 @@ class MakeModelsCommand extends GeneratorCommand
         // 移除表前缀
         $tableName = str_replace(DB::getTablePrefix(), '', $table);
         // 获取驼峰class 名称
-        $className =Character::convertUnderline($tableName);
+        if(!empty($this->generator['model_add_s'])){
+            $className =Character::convertUnderline($tableName); //解决goods 变good之类的
+        }else{
+            $className = Str::studly(Str::singular($tableName)); //官方
+        }
 //        echo $data;exit;
 //        echo Str::singular($tableName);exit;
 //        $className = Str::studly(Str::singular($tableName));
